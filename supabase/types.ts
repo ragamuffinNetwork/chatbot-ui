@@ -211,6 +211,7 @@ export interface Database {
           model: string
           name: string
           prompt: string
+          rageneai_chat_id: number | null
           sharing: string
           temperature: number
           updated_at: string | null
@@ -229,6 +230,7 @@ export interface Database {
           model: string
           name: string
           prompt: string
+          rageneai_chat_id?: number | null
           sharing?: string
           temperature: number
           updated_at?: string | null
@@ -247,6 +249,7 @@ export interface Database {
           model?: string
           name?: string
           prompt?: string
+          rageneai_chat_id?: number | null
           sharing?: string
           temperature?: number
           updated_at?: string | null

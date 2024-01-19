@@ -6,6 +6,7 @@ export type LLMID =
   | AnthropicLLMID
   | MistralLLMID
   | PerplexityLLMID
+  | RageneAILLMID
 
 // OpenAI Models (UPDATED 12/18/23)
 export type OpenAILLMID =
@@ -33,6 +34,10 @@ export type MistralLLMID =
 export type PerplexityLLMID =
   | "pplx-7b-online" // Perplexity Online 7B
   | "pplx-70b-online" // Perplexity Online 70B
+
+export type RageneAILLMID =
+  | "rageneai-simple-1.0" // Ragene Simple 1.0
+  | "rageneai-complex-1.0" // Ragene Complex 1.0
 
 export interface LLM {
   modelId: LLMID

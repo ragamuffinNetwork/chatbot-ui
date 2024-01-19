@@ -134,6 +134,16 @@ Your local instance of Chatbot UI should now be running at [http://localhost:300
 
 You can view your backend GUI at [http://localhost:54323/project/default/editor](http://localhost:54323/project/default/editor).
 
+### 7. Change database
+
+Change database at your backend GUI directly
+
+If you want to save the changes in migrations, run:
+
+```bash
+supabase db diff --use-migra -f [filename]
+```
+
 ## Hosted Quickstart
 
 Follow these steps to get your own Chatbot UI instance running in the cloud.
@@ -229,6 +239,7 @@ In environment variables, add the following from the values you got above:
 - `NEXT_PUBLIC_OLLAMA_URL` (only needed when using local Ollama models; default: `http://localhost:11434`)
 
 You can also add API keys as environment variables.
+
 - `OPENAI_API_KEY`
 - `AZURE_OPENAI_API_KEY`
 - `NEXT_PUBLIC_AZURE_OPENAI_ENDPOINT`
