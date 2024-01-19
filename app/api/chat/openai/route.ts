@@ -2,10 +2,11 @@ import { CHAT_SETTING_LIMITS } from "@/lib/chat-setting-limits"
 import { checkApiKey, getServerProfile } from "@/lib/server/server-chat-helpers"
 import { ChatSettings } from "@/types"
 import { OpenAIStream, StreamingTextResponse } from "ai"
+import { ServerRuntime } from "next"
 import OpenAI from "openai"
 import { ChatCompletionCreateParamsBase } from "openai/resources/chat/completions.mjs"
 
-export const runtime = "edge"
+export const runtime: ServerRuntime = "edge"
 
 export async function POST(request: Request) {
   const json = await request.json()
@@ -13,6 +14,8 @@ export async function POST(request: Request) {
     chatSettings: ChatSettings
     messages: any[]
   }
+
+  console.log("openai messages", messages, "\n\n\n")
 
   try {
     const profile = await getServerProfile()

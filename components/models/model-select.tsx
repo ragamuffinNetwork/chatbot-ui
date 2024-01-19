@@ -28,7 +28,8 @@ export const ModelSelect: FC<ModelSelectProps> = ({
   selectedModelId,
   onSelectModel
 }) => {
-  const { profile, availableLocalModels } = useContext(ChatbotUIContext)
+  const { profile, availableLocalModels, availableOpenRouterModels } =
+    useContext(ChatbotUIContext)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -49,8 +50,15 @@ export const ModelSelect: FC<ModelSelectProps> = ({
 
   useEffect(() => {
     const checkModelLock = async () => {
+      const isUsingAzure = profile?.use_azure_openai
+
       if (SELECTED_MODEL && profile) {
-        const locked = await isModelLocked(SELECTED_MODEL.provider, profile)
+        const locked = await isModelLocked(
+          SELECTED_MODEL.provider === "openai" && isUsingAzure
+            ? "azure"
+            : SELECTED_MODEL.provider,
+          profile
+        )
         setIsLocked(locked)
       }
     }
@@ -63,7 +71,11 @@ export const ModelSelect: FC<ModelSelectProps> = ({
     setIsOpen(false)
   }
 
-  const ALL_MODELS = [...hostedModelOptions, ...localModelOptions]
+  const ALL_MODELS = [
+    ...hostedModelOptions,
+    ...localModelOptions,
+    ...availableOpenRouterModels
+  ]
 
   const groupedModels = ALL_MODELS.reduce<Record<string, LLM[]>>(
     (groups, model) => {
@@ -81,8 +93,7 @@ export const ModelSelect: FC<ModelSelectProps> = ({
     model => model.modelId === selectedModelId
   )
 
-  if (!SELECTED_MODEL) return null
-  if (!profile) return null
+  if (!SELECTED_MODEL || !profile) return null
 
   const usingLocalModels = availableLocalModels.length > 0
 
@@ -160,6 +171,7 @@ export const ModelSelect: FC<ModelSelectProps> = ({
               .filter(model => {
                 if (tab === "hosted") return model.provider !== "ollama"
                 if (tab === "local") return model.provider === "ollama"
+                if (tab === "openrouter") return model.provider === "openrouter"
               })
               .filter(model =>
                 model.modelName.toLowerCase().includes(search.toLowerCase())

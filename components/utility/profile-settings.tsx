@@ -11,6 +11,7 @@ import { supabase } from "@/lib/supabase/browser-client"
 import {
   IconCircleCheckFilled,
   IconCircleXFilled,
+  IconFileDownload,
   IconLoader2,
   IconLogout,
   IconUser
@@ -38,8 +39,10 @@ import { ThemeSwitcher } from "./theme-switcher"
 
 interface ProfileSettingsProps {}
 
+import { exportLocalStorageAsJSON } from "@/lib/export-old-data"
 import { cn } from "@/lib/utils"
 import { VALID_KEYS } from "@/types/valid-keys"
+import { WithTooltip } from "../ui/with-tooltip"
 
 export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
   const { profile, setProfile } = useContext(ChatbotUIContext)
@@ -86,6 +89,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
   const [azureOpenai45VisionID, setAzureOpenai45VisionID] = useState(
     profile?.azure_openai_45_vision_id || ""
   )
+  const [azureEmbeddingsID, setAzureEmbeddingsID] = useState(
+    profile?.azure_openai_embeddings_id || ""
+  )
   const [anthropicAPIKey, setAnthropicAPIKey] = useState(
     profile?.anthropic_api_key || ""
   )
@@ -99,12 +105,17 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
     profile?.perplexity_api_key || ""
   )
 
+  const [openrouterAPIKey, setOpenrouterAPIKey] = useState(
+    profile?.openrouter_api_key || ""
+  )
+
   const [isEnvOpenai, setIsEnvOpenai] = useState(false)
   const [isEnvAnthropic, setIsEnvAnthropic] = useState(false)
   const [isEnvGoogleGemini, setIsEnvGoogleGemini] = useState(false)
   const [isEnvMistral, setIsEnvMistral] = useState(false)
   const [isEnvPerplexity, setIsEnvPerplexity] = useState(false)
   const [isEnvAzureOpenai, setIsEnvAzureOpenai] = useState(false)
+  const [isEnvOpenrouter, setIsEnvOpenrouter] = useState(false)
 
   useEffect(() => {
     async function fetchKeys() {
@@ -143,6 +154,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
             case "AZURE_OPENAI_API_KEY":
               setIsEnvAzureOpenai(isUsing)
               break
+            case "OPENROUTER_API_KEY":
+              setIsEnvOpenrouter(isUsing)
+              break
             default:
               console.warn("Unhandled key type:", key)
               break
@@ -159,6 +173,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     router.push("/login")
+    router.refresh()
     return
   }
 
@@ -191,7 +206,9 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
       azure_openai_endpoint: azureOpenaiEndpoint,
       azure_openai_35_turbo_id: azureOpenai35TurboID,
       azure_openai_45_turbo_id: azureOpenai45TurboID,
-      azure_openai_45_vision_id: azureOpenai45VisionID
+      azure_openai_45_vision_id: azureOpenai45VisionID,
+      azure_openai_embeddings_id: azureEmbeddingsID,
+      openrouter_api_key: openrouterAPIKey
     })
     setProfile(updatedProfile)
 
@@ -464,11 +481,11 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                       <div className="space-y-1">
                         {!!process.env.NEXT_PUBLIC_AZURE_OPENAI_ENDPOINT ? (
                           <Label className="text-xs">
-                            Azure OpenAI Endpoint set by admin.
+                            Azure endpoint set by admin.
                           </Label>
                         ) : (
                           <>
-                            <Label>Azure OpenAI Endpoint</Label>
+                            <Label>Azure Endpoint</Label>
 
                             <Input
                               placeholder="https://your-endpoint.openai.azure.com"
@@ -487,14 +504,14 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                       <div className="space-y-1">
                         {!!process.env.NEXT_PUBLIC_AZURE_GPT_35_TURBO_ID ? (
                           <Label className="text-xs">
-                            Azure OpenAI GPT-3.5 Turbo ID set by admin.
+                            Azure GPT-3.5 Turbo deployment name set by admin.
                           </Label>
                         ) : (
                           <>
-                            <Label>Azure OpenAI GPT-3.5 Turbo ID</Label>
+                            <Label>Azure GPT-3.5 Turbo Deployment Name</Label>
 
                             <Input
-                              placeholder="Azure OpenAI GPT-3.5 Turbo ID"
+                              placeholder="Azure OpenAI GPT-3.5 Turbo Deployment Name"
                               type="password"
                               value={azureOpenai35TurboID}
                               onChange={e =>
@@ -510,14 +527,14 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                       <div className="space-y-1">
                         {!!process.env.NEXT_PUBLIC_AZURE_GPT_45_TURBO_ID ? (
                           <Label className="text-xs">
-                            Azure OpenAI GPT-4.5 Turbo ID set by admin.
+                            Azure GPT-4.5 Turbo deployment name set by admin.
                           </Label>
                         ) : (
                           <>
-                            <Label>Azure OpenAI GPT-4.5 Turbo ID</Label>
+                            <Label>Azure GPT-4.5 Turbo Deployment Name</Label>
 
                             <Input
-                              placeholder="Azure OpenAI GPT-4.5 Turbo ID"
+                              placeholder="Azure OpenAI GPT-4.5 Turbo Deployment Name"
                               type="password"
                               value={azureOpenai45TurboID}
                               onChange={e =>
@@ -533,18 +550,41 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                       <div className="space-y-1">
                         {!!process.env.NEXT_PUBLIC_AZURE_GPT_45_VISION_ID ? (
                           <Label className="text-xs">
-                            Azure OpenAI GPT-4.5 Vision ID set by admin.
+                            Azure GPT-4.5 Vision deployment name set by admin.
                           </Label>
                         ) : (
                           <>
-                            <Label>Azure OpenAI GPT-4.5 Vision ID</Label>
+                            <Label>Azure GPT-4.5 Vision Deployment Name</Label>
 
                             <Input
-                              placeholder="Azure OpenAI GPT-4.5 Vision ID"
+                              placeholder="Azure OpenAI GPT-4.5 Vision Deployment Name"
                               type="password"
                               value={azureOpenai45VisionID}
                               onChange={e =>
                                 setAzureOpenai45VisionID(e.target.value)
+                              }
+                            />
+                          </>
+                        )}
+                      </div>
+                    }
+
+                    {
+                      <div className="space-y-1">
+                        {!!process.env.NEXT_PUBLIC_AZURE_EMBEDDINGS_ID ? (
+                          <Label className="text-xs">
+                            Azure Embeddings deployment name set by admin.
+                          </Label>
+                        ) : (
+                          <>
+                            <Label>Azure Embeddings Deployment Name</Label>
+
+                            <Input
+                              placeholder="Azure OpenAI Embeddings Deployment Name"
+                              type="password"
+                              value={azureEmbeddingsID}
+                              onChange={e =>
+                                setAzureEmbeddingsID(e.target.value)
                               }
                             />
                           </>
@@ -642,12 +682,45 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                   </>
                 )}
               </div>
+
+              <div className="space-y-1">
+                {isEnvOpenrouter ? (
+                  <Label>OpenRouter API key set by admin.</Label>
+                ) : (
+                  <>
+                    <Label>OpenRouter API Key</Label>
+                    <Input
+                      placeholder="OpenRouter API Key"
+                      type="password"
+                      value={openrouterAPIKey}
+                      onChange={e => setOpenrouterAPIKey(e.target.value)}
+                    />
+                  </>
+                )}
+              </div>
             </TabsContent>
           </Tabs>
         </div>
 
         <div className="mt-6 flex items-center">
-          <ThemeSwitcher />
+          <div className="flex items-center space-x-1">
+            <ThemeSwitcher />
+
+            <WithTooltip
+              display={
+                <div>
+                  Download Chatbot UI 1.0 data as JSON. Import coming soon!
+                </div>
+              }
+              trigger={
+                <IconFileDownload
+                  className="cursor-pointer hover:opacity-50"
+                  size={32}
+                  onClick={exportLocalStorageAsJSON}
+                />
+              }
+            />
+          </div>
 
           <div className="ml-auto space-x-2">
             <Button variant="ghost" onClick={() => setIsOpen(false)}>
