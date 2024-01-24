@@ -40,7 +40,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers attribute="class" defaultTheme="dark">
+        <Providers attribute="class" defaultTheme="light">
           <Toaster richColors position="top-center" duration={2000} />
           <div className="bg-background text-foreground flex h-screen flex-col items-center">
             {session ? <GlobalState>{children}</GlobalState> : children}

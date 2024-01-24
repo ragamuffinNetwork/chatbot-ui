@@ -139,7 +139,7 @@ export const APIStep: FC<APIStepProps> = ({
           </>
         ) : (
           <>
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <Label>OpenAI Organization ID</Label>
 
               <Input
@@ -148,7 +148,7 @@ export const APIStep: FC<APIStepProps> = ({
                 value={openaiOrgID}
                 onChange={e => onOpenaiOrgIDChange(e.target.value)}
               />
-            </div>
+            </div> */}
           </>
         )}
       </div>

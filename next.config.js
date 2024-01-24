@@ -9,15 +9,15 @@ module.exports = withBundleAnalyzer({
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "localhost"
+        hostname: "0.0.0.0"
       },
       {
         protocol: "http",
-        hostname: "127.0.0.1"
+        hostname: "0.0.0.0"
       },
       {
         protocol: "https",
-        hostname: "**"
+        hostname: "0.0.0.0"
       }
     ]
   },

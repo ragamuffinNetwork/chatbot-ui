@@ -36,17 +36,17 @@ export const SidebarSwitcher: FC<SidebarSwitcherProps> = ({
           contentType="presets"
           onContentTypeChange={onContentTypeChange}
         />
-        <SidebarSwitchItem
+        {/* <SidebarSwitchItem
           icon={<IconPencil size={SIDEBAR_ICON_SIZE} />}
           contentType="prompts"
           onContentTypeChange={onContentTypeChange}
-        />
+        /> */}
         <SidebarSwitchItem
           icon={<IconFile size={SIDEBAR_ICON_SIZE} />}
           contentType="files"
           onContentTypeChange={onContentTypeChange}
         />
-        <SidebarSwitchItem
+        {/* <SidebarSwitchItem
           icon={<IconBooks size={SIDEBAR_ICON_SIZE} />}
           contentType="collections"
           onContentTypeChange={onContentTypeChange}
@@ -55,13 +55,13 @@ export const SidebarSwitcher: FC<SidebarSwitcherProps> = ({
           icon={<IconRobotFace size={SIDEBAR_ICON_SIZE} />}
           contentType="assistants"
           onContentTypeChange={onContentTypeChange}
-        />
+        /> */}
 
-        <SidebarSwitchItem
+        {/* <SidebarSwitchItem
           icon={<IconBolt size={SIDEBAR_ICON_SIZE} />}
           contentType="tools"
           onContentTypeChange={onContentTypeChange}
-        />
+        /> */}
       </TabsList>
 
       <div className="flex flex-col items-center space-y-4">

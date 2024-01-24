@@ -141,7 +141,7 @@ const AdvancedContent: FC<AdvancedContentProps> = ({
         />
       </div>
 
-      <div className="mt-6 space-y-3">
+      {/* <div className="mt-6 space-y-3">
         <Label className="flex items-center space-x-1">
           <div>Context Length:</div>
 
@@ -160,7 +160,7 @@ const AdvancedContent: FC<AdvancedContentProps> = ({
           max={MODEL_LIMITS.MAX_CONTEXT_LENGTH - 200} // 200 is a minimum buffer for token output
           step={1}
         />
-      </div>
+      </div> */}
 
       <div className="mt-7 flex items-center space-x-2">
         <Checkbox

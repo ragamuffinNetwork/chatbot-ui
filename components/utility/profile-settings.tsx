@@ -594,7 +594,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                   </>
                 ) : (
                   <>
-                    <div className="space-y-1">
+                    {/* <div className="space-y-1">
                       {!!process.env.NEXT_PUBLIC_OPENAI_ORGANIZATION_ID ? (
                         <Label className="text-xs">
                           OpenAI Organization ID set by admin.
@@ -614,7 +614,7 @@ export const ProfileSettings: FC<ProfileSettingsProps> = ({}) => {
                           />
                         </>
                       )}
-                    </div>
+                    </div> */}
                   </>
                 )}
               </div>

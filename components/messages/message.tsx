@@ -1,7 +1,7 @@
 import { useChatHandler } from "@/components/chat/chat-hooks/use-chat-handler"
 import { ChatbotUIContext } from "@/context/context"
 import { LLM_LIST } from "@/lib/models/llm/llm-list"
-import { cn } from "@/lib/utils"
+import { cn, writeToClipboard } from "@/lib/utils"
 import { Tables } from "@/supabase/types"
 import { LLM, LLMID, MessageImage } from "@/types"
 import {
@@ -80,7 +80,7 @@ export const Message: FC<MessageProps> = ({
   const [viewSources, setViewSources] = useState(false)
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(message.content)
+    writeToClipboard(message.content)
   }
 
   const handleSendEdit = () => {

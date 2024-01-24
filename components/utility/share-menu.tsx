@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "../ui/dropdown-menu"
+import { writeToClipboard } from "@/lib/utils"
 
 export type ShareStatus = "private" | "unlisted" | "public"
 
@@ -80,7 +81,7 @@ export const ShareMenu: FC<ShareMenuProps> = ({
     })
 
     if (navigator.clipboard && shareStatus !== "private") {
-      navigator.clipboard.writeText(
+      writeToClipboard(
         `${window.location.origin}/share/${contentName}/${item.id}`
       )
     }

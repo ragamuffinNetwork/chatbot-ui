@@ -3,7 +3,12 @@ import { NextResponse, type NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
   try {
+
     const { supabase, response } = createClient(request)
+
+    response.headers.set('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.set('Access-Control-Allow-Origin', '*')
 
     const session = await supabase.auth.getSession()
 

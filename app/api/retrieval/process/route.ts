@@ -6,12 +6,15 @@ import {
   processPdf,
   processTxt
 } from "@/lib/retrieval/processing"
+import { requestJson } from "@/lib/server/request"
 import { checkApiKey, getServerProfile } from "@/lib/server/server-chat-helpers"
 import { Database } from "@/supabase/types"
 import { FileItemChunk } from "@/types"
 import { createClient } from "@supabase/supabase-js"
 import { NextResponse } from "next/server"
-import OpenAI from "openai"
+import { ServerRuntime } from "next/types"
+
+export const runtime: ServerRuntime = "nodejs"
 
 export async function POST(req: Request) {
   try {
@@ -66,37 +69,29 @@ export async function POST(req: Request) {
 
     let embeddings: any = []
 
-    let openai
-    if (profile.use_azure_openai) {
-      openai = new OpenAI({
-        apiKey: profile.azure_openai_api_key || "",
-        baseURL: `${profile.azure_openai_endpoint}/openai/deployments/${profile.azure_openai_embeddings_id}`,
-        defaultQuery: { "api-version": "2023-07-01-preview" },
-        defaultHeaders: { "api-key": profile.azure_openai_api_key }
-      })
-    } else {
-      openai = new OpenAI({
-        apiKey: profile.openai_api_key || "",
-        organization: profile.openai_organization_id
-      })
-    }
-
     if (embeddingsProvider === "openai") {
-      const response = await openai.embeddings.create({
-        model: "text-embedding-ada-002",
-        input: chunks.map(chunk => chunk.content)
-      })
 
-      embeddings = response.data.map((item: any) => {
-        return item.embedding
-      })
+      const postData = {
+        // model: 需要探索从哪获取
+        input: chunks.map((chunk: FileItemChunk) => {
+          return chunk.content
+        })
+      };
+  
+      const options = {
+        hostname: '18.117.241.252',
+        port: 3000,
+        path: '/api/openai/embedding'
+      };
+
+      embeddings = await requestJson(postData, options, true)
+
     } else if (embeddingsProvider === "local") {
       const embeddingPromises = chunks.map(async chunk => {
         try {
           return await generateLocalEmbedding(chunk.content)
         } catch (error) {
           console.error(`Error generating embedding for chunk: ${chunk}`, error)
-
           return null
         }
       })

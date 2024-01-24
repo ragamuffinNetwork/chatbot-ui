@@ -1,8 +1,9 @@
 import { generateLocalEmbedding } from "@/lib/generate-local-embedding"
+import { requestJson } from "@/lib/server/request"
 import { checkApiKey, getServerProfile } from "@/lib/server/server-chat-helpers"
 import { Database } from "@/supabase/types"
+import { FileItemChunk } from "@/types"
 import { createClient } from "@supabase/supabase-js"
-import OpenAI from "openai"
 
 export async function POST(request: Request) {
   const json = await request.json()
@@ -33,32 +34,25 @@ export async function POST(request: Request) {
 
     let chunks: any[] = []
 
-    let openai
-    if (profile.use_azure_openai) {
-      openai = new OpenAI({
-        apiKey: profile.azure_openai_api_key || "",
-        baseURL: `${profile.azure_openai_endpoint}/openai/deployments/${profile.azure_openai_embeddings_id}`,
-        defaultQuery: { "api-version": "2023-07-01-preview" },
-        defaultHeaders: { "api-key": profile.azure_openai_api_key }
-      })
-    } else {
-      openai = new OpenAI({
-        apiKey: profile.openai_api_key || "",
-        organization: profile.openai_organization_id
-      })
-    }
+    console.log("embeddingProvider:", embeddingsProvider);
 
     if (embeddingsProvider === "openai") {
-      const response = await openai.embeddings.create({
-        model: "text-embedding-ada-002",
+      const postData = {
+        // model: 需要探索从哪获取
         input: userInput
-      })
+      };
+  
+      const options = {
+        hostname: '18.117.241.252',
+        port: 3000,
+        path: '/api/openai/embedding'
+      };
 
-      const openaiEmbedding = response.data.map(item => item.embedding)[0]
+      const userInputEmbedding = await requestJson(postData, options, true);
 
       const { data: openaiFileItems, error: openaiError } =
         await supabaseAdmin.rpc("match_file_items_openai", {
-          query_embedding: openaiEmbedding as any,
+          query_embedding: userInputEmbedding[0] as any,
           match_count: sourceCount,
           file_ids: uniqueFileIds
         })

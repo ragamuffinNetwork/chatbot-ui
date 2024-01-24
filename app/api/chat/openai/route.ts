@@ -1,46 +1,45 @@
 import { CHAT_SETTING_LIMITS } from "@/lib/chat-setting-limits"
-import { checkApiKey, getServerProfile } from "@/lib/server/server-chat-helpers"
-import { ChatSettings } from "@/types"
-import { OpenAIStream, StreamingTextResponse } from "ai"
 import { ServerRuntime } from "next"
-import OpenAI from "openai"
-import { ChatCompletionCreateParamsBase } from "openai/resources/chat/completions.mjs"
+import { ChatSettings } from "@/types"
+import { requestJson } from "@/lib/server/request"
 
-export const runtime: ServerRuntime = "edge"
+export const runtime: ServerRuntime = "nodejs"
 
 export async function POST(request: Request) {
-  const json = await request.json()
-  const { chatSettings, messages } = json as {
-    chatSettings: ChatSettings
-    messages: any[]
-  }
+  try{
+    const json = await request.json()
 
-  console.log("openai messages", messages, "\n\n\n")
+    const {
+      messages,
+      chatSettings
+    } = json as {
+      messages: any[],
+      chatSettings: ChatSettings
+    }
 
-  try {
-    const profile = await getServerProfile()
+    const { model, temperature } = chatSettings;
 
-    checkApiKey(profile.openai_api_key, "OpenAI")
+    const validMessages = messages.length > 8 ? messages.slice(-8): messages
 
-    const openai = new OpenAI({
-      apiKey: profile.openai_api_key || "",
-      organization: profile.openai_organization_id
-    })
+    const postData = {
+      messages: validMessages,
+      model,
+      temperature,
+      max_tokens: CHAT_SETTING_LIMITS[model].MAX_TOKEN_OUTPUT_LENGTH
+    };
 
-    const response = await openai.chat.completions.create({
-      model: chatSettings.model as ChatCompletionCreateParamsBase["model"],
-      messages: messages as ChatCompletionCreateParamsBase["messages"],
-      temperature: chatSettings.temperature,
-      max_tokens:
-        CHAT_SETTING_LIMITS[chatSettings.model].MAX_TOKEN_OUTPUT_LENGTH,
-      stream: true
-    })
+    const options = {
+      hostname: '18.117.241.252',
+      port: 3000,
+      path: '/api/openai/chat'
+    };
+    
+    const {response} = await requestJson(postData, options)
 
-    const stream = OpenAIStream(response)
+    return new Response(response)
 
-    return new StreamingTextResponse(stream)
   } catch (error: any) {
-    const errorMessage = error.error?.message || "An unexpected error occurred"
+    const errorMessage = error.error?.message || error || "An unexpected error occurred"
     const errorCode = error.status || 500
     return new Response(JSON.stringify({ message: errorMessage }), {
       status: errorCode
