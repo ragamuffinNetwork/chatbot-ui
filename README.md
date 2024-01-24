@@ -142,6 +142,16 @@ Your local instance of Chatbot UI should now be running at [http://localhost:300
 
 You can view your backend GUI at [http://localhost:54323/project/default/editor](http://localhost:54323/project/default/editor).
 
+### 7. Change database
+
+Change database at your backend GUI directly
+
+If you want to save the changes in migrations, run:
+
+```bash
+supabase db diff --use-migra -f [filename]
+```
+
 ## Hosted Quickstart
 
 Follow these steps to get your own Chatbot UI instance running in the cloud.
