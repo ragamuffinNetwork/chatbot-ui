@@ -34,144 +34,6 @@ export interface Database {
   }
   public: {
     Tables: {
-      assistant_collections: {
-        Row: {
-          assistant_id: string
-          collection_id: string
-          created_at: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          assistant_id: string
-          collection_id: string
-          created_at?: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          assistant_id?: string
-          collection_id?: string
-          created_at?: string
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "assistant_collections_assistant_id_fkey"
-            columns: ["assistant_id"]
-            isOneToOne: false
-            referencedRelation: "assistants"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "assistant_collections_collection_id_fkey"
-            columns: ["collection_id"]
-            isOneToOne: false
-            referencedRelation: "collections"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "assistant_collections_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      assistant_files: {
-        Row: {
-          assistant_id: string
-          created_at: string
-          file_id: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          assistant_id: string
-          created_at?: string
-          file_id: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          assistant_id?: string
-          created_at?: string
-          file_id?: string
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "assistant_files_assistant_id_fkey"
-            columns: ["assistant_id"]
-            isOneToOne: false
-            referencedRelation: "assistants"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "assistant_files_file_id_fkey"
-            columns: ["file_id"]
-            isOneToOne: false
-            referencedRelation: "files"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "assistant_files_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      assistant_tools: {
-        Row: {
-          assistant_id: string
-          created_at: string
-          tool_id: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          assistant_id: string
-          created_at?: string
-          tool_id: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          assistant_id?: string
-          created_at?: string
-          tool_id?: string
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "assistant_tools_assistant_id_fkey"
-            columns: ["assistant_id"]
-            isOneToOne: false
-            referencedRelation: "assistants"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "assistant_tools_tool_id_fkey"
-            columns: ["tool_id"]
-            isOneToOne: false
-            referencedRelation: "tools"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "assistant_tools_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       assistant_workspaces: {
         Row: {
           assistant_id: string
@@ -349,6 +211,7 @@ export interface Database {
           model: string
           name: string
           prompt: string
+          rageneai_chat_id: number | null
           sharing: string
           temperature: number
           updated_at: string | null
@@ -367,6 +230,7 @@ export interface Database {
           model: string
           name: string
           prompt: string
+          rageneai_chat_id?: number | null
           sharing?: string
           temperature: number
           updated_at?: string | null
@@ -385,6 +249,7 @@ export interface Database {
           model?: string
           name?: string
           prompt?: string
+          rageneai_chat_id?: number | null
           sharing?: string
           temperature?: number
           updated_at?: string | null
@@ -992,7 +857,6 @@ export interface Database {
           azure_openai_45_turbo_id: string | null
           azure_openai_45_vision_id: string | null
           azure_openai_api_key: string | null
-          azure_openai_embeddings_id: string | null
           azure_openai_endpoint: string | null
           bio: string
           created_at: string
@@ -1005,7 +869,6 @@ export interface Database {
           mistral_api_key: string | null
           openai_api_key: string | null
           openai_organization_id: string | null
-          openrouter_api_key: string | null
           perplexity_api_key: string | null
           profile_context: string
           updated_at: string | null
@@ -1019,7 +882,6 @@ export interface Database {
           azure_openai_45_turbo_id?: string | null
           azure_openai_45_vision_id?: string | null
           azure_openai_api_key?: string | null
-          azure_openai_embeddings_id?: string | null
           azure_openai_endpoint?: string | null
           bio: string
           created_at?: string
@@ -1032,7 +894,6 @@ export interface Database {
           mistral_api_key?: string | null
           openai_api_key?: string | null
           openai_organization_id?: string | null
-          openrouter_api_key?: string | null
           perplexity_api_key?: string | null
           profile_context: string
           updated_at?: string | null
@@ -1046,7 +907,6 @@ export interface Database {
           azure_openai_45_turbo_id?: string | null
           azure_openai_45_vision_id?: string | null
           azure_openai_api_key?: string | null
-          azure_openai_embeddings_id?: string | null
           azure_openai_endpoint?: string | null
           bio?: string
           created_at?: string
@@ -1059,7 +919,6 @@ export interface Database {
           mistral_api_key?: string | null
           openai_api_key?: string | null
           openai_organization_id?: string | null
-          openrouter_api_key?: string | null
           perplexity_api_key?: string | null
           profile_context?: string
           updated_at?: string | null
@@ -1164,106 +1023,6 @@ export interface Database {
           },
           {
             foreignKeyName: "prompts_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      tool_workspaces: {
-        Row: {
-          created_at: string
-          tool_id: string
-          updated_at: string | null
-          user_id: string
-          workspace_id: string
-        }
-        Insert: {
-          created_at?: string
-          tool_id: string
-          updated_at?: string | null
-          user_id: string
-          workspace_id: string
-        }
-        Update: {
-          created_at?: string
-          tool_id?: string
-          updated_at?: string | null
-          user_id?: string
-          workspace_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tool_workspaces_tool_id_fkey"
-            columns: ["tool_id"]
-            isOneToOne: false
-            referencedRelation: "tools"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tool_workspaces_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tool_workspaces_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      tools: {
-        Row: {
-          created_at: string
-          description: string
-          folder_id: string | null
-          id: string
-          name: string
-          schema: Json
-          sharing: string
-          updated_at: string | null
-          url: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          description: string
-          folder_id?: string | null
-          id?: string
-          name: string
-          schema: Json
-          sharing?: string
-          updated_at?: string | null
-          url: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          description?: string
-          folder_id?: string | null
-          id?: string
-          name?: string
-          schema?: Json
-          sharing?: string
-          updated_at?: string | null
-          url?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tools_folder_id_fkey"
-            columns: ["folder_id"]
-            isOneToOne: false
-            referencedRelation: "folders"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tools_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"

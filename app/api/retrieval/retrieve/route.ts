@@ -1,5 +1,5 @@
 import { generateLocalEmbedding } from "@/lib/generate-local-embedding"
-import { requestJson } from "@/lib/server/request"
+import { OVERSEA_SERVER, requestJson } from "@/lib/server/request"
 import { checkApiKey, getServerProfile } from "@/lib/server/server-chat-helpers"
 import { Database } from "@/supabase/types"
 import { FileItemChunk } from "@/types"
@@ -34,21 +34,23 @@ export async function POST(request: Request) {
 
     let chunks: any[] = []
 
-    console.log("embeddingProvider:", embeddingsProvider);
+    console.log("embeddingProvider:", embeddingsProvider)
 
     if (embeddingsProvider === "openai") {
       const postData = {
         // model: 需要探索从哪获取
         input: userInput
-      };
-  
-      const options = {
-        hostname: '18.117.241.252',
-        port: 3000,
-        path: '/api/openai/embedding'
-      };
+      }
 
-      const userInputEmbedding = await requestJson(postData, options, true);
+      const options = {
+        ...OVERSEA_SERVER
+      }
+
+      const userInputEmbedding = await requestJson(
+        options,
+        "/api/openai/embedding",
+        postData
+      )
 
       const { data: openaiFileItems, error: openaiError } =
         await supabaseAdmin.rpc("match_file_items_openai", {

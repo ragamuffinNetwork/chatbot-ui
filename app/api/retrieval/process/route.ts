@@ -6,7 +6,7 @@ import {
   processPdf,
   processTxt
 } from "@/lib/retrieval/processing"
-import { requestJson } from "@/lib/server/request"
+import { OVERSEA_SERVER, requestJson } from "@/lib/server/request"
 import { checkApiKey, getServerProfile } from "@/lib/server/server-chat-helpers"
 import { Database } from "@/supabase/types"
 import { FileItemChunk } from "@/types"
@@ -70,22 +70,18 @@ export async function POST(req: Request) {
     let embeddings: any = []
 
     if (embeddingsProvider === "openai") {
-
       const postData = {
         // model: 需要探索从哪获取
         input: chunks.map((chunk: FileItemChunk) => {
           return chunk.content
         })
-      };
-  
+      }
+
       const options = {
-        hostname: '18.117.241.252',
-        port: 3000,
-        path: '/api/openai/embedding'
-      };
+        ...OVERSEA_SERVER
+      }
 
-      embeddings = await requestJson(postData, options, true)
-
+      embeddings = await requestJson(options, "/api/openai/embedding", postData)
     } else if (embeddingsProvider === "local") {
       const embeddingPromises = chunks.map(async chunk => {
         try {
