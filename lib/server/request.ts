@@ -3,20 +3,20 @@ const https = require("https")
 const HttpProxyAgent = require("http-proxy-agent")
 // const HttpsProxyAgent = require("https-proxy-agent")
 
-// const proxyUrl = "http://127.0.0.1:8999"
-const proxyUrl = "http://127.0.0.1:7890"
+const proxyUrl = "http://127.0.0.1:8999"
+// const proxyUrl = "http://127.0.0.1:7890"
 
 const httpAgent = new HttpProxyAgent(proxyUrl)
 
-// export const OVERSEA_SERVER = {
-//   hostname: "18.117.241.252",
-//   port: 3000
-// }
-
 export const OVERSEA_SERVER = {
-  hostname: "127.0.0.1",
-  port: 5000
+  hostname: "18.117.241.252",
+  port: 3000
 }
+
+// export const OVERSEA_SERVER = {
+//   hostname: "127.0.0.1",
+//   port: 5000
+// }
 
 function getAgent(useHttps: boolean = false) {
   return httpAgent
